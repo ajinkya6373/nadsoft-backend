@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from "cors";
 import {
     createStudent,
     getStudents,
@@ -9,6 +10,7 @@ import {
 import { validateStudent } from '../middleware/validateStudent.js';
 
 const router = express.Router();
+router.use(cors());
 
 router.post('/createStudent', validateStudent, createStudent);
 router.get('/getAll', getStudents);
