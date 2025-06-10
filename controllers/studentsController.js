@@ -65,12 +65,8 @@ export const getStudentById = async (req, res) => {
     try {
         const studentResult = await pool.query(`SELECT * FROM students WHERE id = $1`, [id]);
         if (studentResult.rows.length === 0) return res.status(404).json({ message: 'Student not found' });
-
-        // const marksResult = await pool.query(`SELECT * FROM marks WHERE student_id = $1`, [id]);
-
         res.json({
             ...studentResult.rows[0],
-            // marks: marksResult.rows,
         });
     } catch (err) {
         res.status(500).json({ error: err.message });
