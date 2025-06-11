@@ -29,3 +29,11 @@ CREATE TABLE marks (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT unique_student_subject UNIQUE (student_id, subject_id)
 );
+
+
+INSERT INTO subjects (id, name) VALUES
+  (1, 'Math'),
+  (2, 'Science'),
+  (3, 'English'),
+  (4, 'History'),
+  (5, 'Geography');
