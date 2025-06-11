@@ -36,13 +36,33 @@ export const createStudent = async (req, res) => {
 export const getStudents = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
+    const search = req.query.search || '';
     const offset = (page - 1) * limit;
+
     try {
-        const students = await pool.query(
-            `SELECT * FROM students ORDER BY id LIMIT $1 OFFSET $2`,
-            [limit, offset]
-        );
-        const countResult = await pool.query(`SELECT COUNT(*) FROM students`);
+        let query = `
+            SELECT * FROM students 
+            WHERE 
+                id::text ILIKE $1 OR 
+                first_name ILIKE $1 OR 
+                last_name ILIKE $1 OR 
+                email ILIKE $1
+            ORDER BY id
+            LIMIT $2 OFFSET $3
+        `;
+
+        let countQuery = `
+            SELECT COUNT(*) FROM students 
+            WHERE 
+                id::text ILIKE $1 OR 
+                first_name ILIKE $1 OR 
+                last_name ILIKE $1 OR 
+                email ILIKE $1
+        `;
+
+        const searchPattern = `%${search}%`;
+        const students = await pool.query(query, [searchPattern, limit, offset]);
+        const countResult = await pool.query(countQuery, [searchPattern]);
         const total = parseInt(countResult.rows[0].count);
 
         res.json({
